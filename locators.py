@@ -2,19 +2,19 @@ from selenium.webdriver.common.by import By
 
 # Форма регистрации
 class RegistrationLocators:
-    NAME_INPUT = (By.XPATH, "//input[@name='name']")  # Поле "Имя"
-    EMAIL_INPUT = (By.XPATH, "//input[@name='email']")  # Поле "Email"
-    PASSWORD_INPUT = (By.XPATH, "//input[@name='password']")  # Поле "Пароль"
-    REGISTER_BUTTON = (By.XPATH, "//button[text()='Зарегистрироваться']")  # Кнопка "Зарегистрироваться"
-    ERROR_MESSAGE_PASSWORD = (By.XPATH, "//p[@class='input__error text_type_main-default']")  # Сообщение об ошибке
+    NAME_INPUT = (By.XPATH, "//label[text()='Имя']/following-sibling::input")
+    EMAIL_INPUT = (By.XPATH, "//label[text()='Email']/following-sibling::input")
+    PASSWORD_INPUT = (By.XPATH, "//label[text()='Пароль']/following-sibling::input")
+    REGISTER_BUTTON = (By.XPATH, "//button[text()='Зарегистрироваться']")
+    ERROR_MESSAGE_PASSWORD = (By.XPATH, "//p[contains(text(),'Некорректный пароль')]")
     ERROR_MESSAGE_REG_NAME_EMPTY = (By.XPATH, ".//p[text() = 'Заполните поле ИМЯ']")  # ошибка при пустом поле Имя
     LOGIN_LINK = (By.XPATH, "//a[text()='Войти']")  # Ссылка "Войти"
 
 # Авторизация
 class AuthorizationLocators:
-    EMAIL_INPUT = (By.XPATH, "//input[@name='email']")  # Поле "Email"
-    PASSWORD_INPUT = (By.XPATH, "//input[@name='password']")  # Поле "Пароль"
-    LOGIN_BUTTON = (By.XPATH, "//button[text()='Войти']")  # Кнопка "Войти"
+    EMAIL_INPUT = (By.XPATH, "//label[text()='Email']/following-sibling::input")
+    PASSWORD_INPUT = (By.XPATH, "//label[text()='Пароль']/following-sibling::input")
+    LOGIN_BUTTON = (By.XPATH, "//button[text()='Войти']")
     ERROR_MESSAGE = (By.XPATH, "//p[@class='input__error text_type_main-default']") # Ошибка при неверных данных
     REGISTER_LINK = (By.XPATH, "//a[text()='Зарегистрироваться']")  # Ссылка на регистрацию
     RECOVER_PASSWORD_LINK = (By.XPATH, "//a[text()='Восстановить пароль']")  # Ссылка на восстановление пароля

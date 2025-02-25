@@ -2,7 +2,7 @@ import pytest
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from locators import AuthorizationLocators
+from locators import AuthorizationLocators, MainPageLocators
 from constants import Constants
 
 @pytest.fixture
@@ -24,5 +24,5 @@ def login(driver):
 
 
 @pytest.fixture
-def open_main_page(driver):
-    driver.get(Constants.URL)  # Открываем главную страницу
+def open_main_page(browser):
+    browser.get(Constants.URL)  # Открываем главную страницу

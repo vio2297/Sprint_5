@@ -1,31 +1,31 @@
 import pytest
-from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from locators import MainPageLocators, AccountPageLocators, AuthorizationLocators
+from locators import MainPageLocators
 from constants import Constants
 
-@pytest.fixture
-def driver():
-    driver = webdriver.Chrome()
-    driver.implicitly_wait(5)
-    yield driver
-    driver.quit()
+@pytest.mark.usefixtures("driver", "login")  # Указываем, что тесты используют фикстуры driver и login
+class TestAccNavigation:
+    def test_acc_navigation_to_constructor_from_account(self, driver):
+        """Проверяет переход в конструктор через кнопку 'Конструктор'"""
+        driver.get(Constants.URL_PROFILE)
 
-@pytest.fixture
-def login(driver):
-    driver.get(Constants.URL_LOGIN)
-    driver.find_element(*AuthorizationLocators.EMAIL_INPUT).send_keys(Constants.EMAIL)
-    driver.find_element(*AuthorizationLocators.PASSWORD_INPUT).send_keys(Constants.PASSWORD)
-    driver.find_element(*AuthorizationLocators.LOGIN_BUTTON).click()
-    WebDriverWait(driver, 5).until(EC.url_changes(Constants.URL_LOGIN))
+        constructor_button = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable(MainPageLocators.CONSTRUCTOR_BUTTON)
+        )
+        constructor_button.click()
 
-def test_navigation_to_constructor_from_account(driver, login):
-    driver.get(Constants.URL_PROFILE)
-    driver.find_element(*MainPageLocators.CONSTRUCTOR_BUTTON).click()
-    assert driver.current_url == Constants.URL, "Не выполнен переход в конструктор через кнопку 'Конструктор'"
+        WebDriverWait(driver, 10).until(EC.url_to_be(Constants.URL))
+        assert driver.current_url == Constants.URL, "Не выполнен переход в конструктор через кнопку 'Конструктор'"
 
-def test_navigation_to_constructor_from_logo(driver, login):
-    driver.get(Constants.URL_PROFILE)
-    driver.find_element(*MainPageLocators.LOGO_BUTTON).click()
-    assert driver.current_url == Constants.URL, "Не выполнен переход в конструктор через логотип"
+    def test_acc_navigation_to_constructor_from_logo(self, driver):
+        """Проверяет переход в конструктор через логотип"""
+        driver.get(Constants.URL_PROFILE)
+
+        logo_button = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable(MainPageLocators.LOGO_BUTTON)
+        )
+        logo_button.click()
+
+        WebDriverWait(driver, 10).until(EC.url_to_be(Constants.URL))
+        assert driver.current_url == Constants.URL, "Не выполнен переход в конструктор через логотип"

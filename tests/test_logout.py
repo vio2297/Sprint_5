@@ -23,7 +23,7 @@ def login(driver):
     WebDriverWait(driver, 10).until(EC.presence_of_element_located((AuthorizationLocators.EMAIL_INPUT)))
 
     if len(driver.find_elements(*AuthorizationLocators.EMAIL_INPUT)) == 0:
-        raise Exception("Элемент EMAIL_INPUT не найден! Проверь XPATH в AuthorizationLocators")
+        pytest.raises(Exception, lambda: (_ for _ in ()).throw(Exception("Элемент EMAIL_INPUT не найден! Проверь XPATH в AuthorizationLocators")))
 
     driver.find_element(*AuthorizationLocators.EMAIL_INPUT).send_keys(Constants.EMAIL)
 
