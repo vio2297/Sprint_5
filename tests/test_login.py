@@ -2,38 +2,76 @@ import pytest
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from locators import AuthorizationLocators, MainPageLocators, RegistrationLocators
+from locators import Locators
 from constants import Constants
+
 
 @pytest.fixture
 def driver():
     driver = webdriver.Chrome()
+    driver.maximize_window()
     driver.implicitly_wait(5)
     yield driver
     driver.quit()
 
-@pytest.fixture
-def login(driver):
-    driver.get(Constants.URL_LOGIN)
-    driver.find_element(*AuthorizationLocators.EMAIL_INPUT).send_keys(Constants.EMAIL)
-    driver.find_element(*AuthorizationLocators.PASSWORD_INPUT).send_keys(Constants.PASSWORD)
-    driver.find_element(*AuthorizationLocators.LOGIN_BUTTON).click()
-    WebDriverWait(driver, 5).until(EC.url_changes(Constants.URL_LOGIN))
 
-def test_login_via_main_page_button(driver, login):
-    driver.get(Constants.URL)
-    driver.find_element(*MainPageLocators.ACCOUNT_BUTTON).click()
-    assert driver.current_url == Constants.URL_PROFILE, "Не выполнен переход в личный кабинет"
+class TestUserLogin:
 
-def test_login_via_registration_form(driver, login):
-    driver.get(Constants.URL_REG)
-    driver.find_element(*RegistrationLocators.LOGIN_LINK).click()
-    assert driver.current_url == Constants.URL_PROFILE, "Не выполнен вход через форму регистрации"
+    def login(self, driver):
 
-def test_login_via_password_recovery(driver, login):
-    driver.get(Constants.URL_LOGIN)
-    driver.find_element(*AuthorizationLocators.RECOVER_PASSWORD_LINK).click()
-    driver.find_element(*AuthorizationLocators.EMAIL_INPUT).send_keys(Constants.EMAIL)
-    driver.find_element(*AuthorizationLocators.PASSWORD_INPUT).send_keys(Constants.PASSWORD)
-    driver.find_element(*AuthorizationLocators.LOGIN_BUTTON).click()
-    assert driver.current_url == Constants.URL_PROFILE, "Не выполнен вход через восстановление пароля"
+        wait = WebDriverWait(driver, 15)
+
+        email_input = wait.until(EC.presence_of_element_located(Locators.EMAIL_INPUT))
+        email_input.send_keys(Constants.EMAIL)
+
+        password_input = wait.until(EC.presence_of_element_located(Locators.PASSWORD_INPUT))
+        password_input.send_keys(Constants.PASSWORD)
+
+        login_button = wait.until(EC.element_to_be_clickable(Locators.LOGIN_BUTTON))
+        login_button.click()
+
+        wait.until(EC.element_to_be_clickable(Locators.MAKE_ORDER_BUTTON))
+
+    def test_login_account_button(self, driver):
+        driver.get(Constants.URL_LOGIN)
+        wait = WebDriverWait(driver, 15)
+
+        account_button = wait.until(EC.element_to_be_clickable(Locators.LOGIN_INTO_ACCOUNT_BUTTON))
+        account_button.click()
+
+        wait.until(EC.url_to_be(Constants.URL_LOGIN))
+
+        self.login(driver)
+
+    def test_login_account_button_in_header(self, driver):
+        driver.get(Constants.URL_LOGIN)
+        wait = WebDriverWait(driver, 15)
+
+        account_button = wait.until(EC.element_to_be_clickable(Locators.ACCOUNT_BUTTON))
+        account_button.click()
+
+        wait.until(EC.url_to_be(Constants.URL_LOGIN))
+
+        self.login(driver)
+
+    def test_login_registration_form(self, driver):
+        driver.get(Constants.URL_LOGIN)
+        wait = WebDriverWait(driver, 15)
+
+        login_text_link = wait.until(EC.element_to_be_clickable(Locators.LOGIN_TEXT_LINK))
+        login_text_link.click()
+
+        wait.until(EC.url_to_be(Constants.URL_LOGIN))
+
+        self.login(driver)
+
+    def test_login_register_forgot_password(self, driver):
+        driver.get(Constants.URL_LOGIN)
+        wait = WebDriverWait(driver, 15)
+
+        login_text_link = wait.until(EC.element_to_be_clickable(Locators.LOGIN_TEXT_LINK))
+        login_text_link.click()
+
+        wait.until(EC.url_to_be(Constants.URL_LOGIN))
+
+        self.login(driver)

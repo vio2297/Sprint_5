@@ -1,31 +1,75 @@
 import pytest
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from locators import MainPageLocators
+from locators import Locators
 from constants import Constants
 
-@pytest.mark.usefixtures("driver", "login")  # Указываем, что тесты используют фикстуры driver и login
 class TestAccNavigation:
-    def test_acc_navigation_to_constructor_from_account(self, driver):
-        """Проверяет переход в конструктор через кнопку 'Конструктор'"""
-        driver.get(Constants.URL_PROFILE)
 
-        constructor_button = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable(MainPageLocators.CONSTRUCTOR_BUTTON)
-        )
+    @pytest.fixture
+    def driver():
+        driver = webdriver.Chrome()
+        driver.maximize_window()
+        driver.implicitly_wait(5)
+        yield driver
+        driver.quit()
+
+    def test_acc_navigation_to_constructor_from_account(self, driver):
+        driver.get(Constants.URL_LOGIN)
+        wait = WebDriverWait(driver, 15)
+
+        # Вводим email
+        email_input = wait.until(EC.presence_of_element_located(Locators.EMAIL_INPUT))
+        email_input.send_keys(Constants.EMAIL)
+
+        # Вводим пароль
+        password_input = wait.until(EC.presence_of_element_located(Locators.PASSWORD_INPUT))
+        password_input.send_keys(Constants.PASSWORD)
+
+        # Нажимаем кнопку "Войти"
+        login_button = wait.until(EC.element_to_be_clickable(Locators.LOGIN_BUTTON))
+        login_button.click()
+
+        # Переход в личный кабинет
+        account_button = wait.until(EC.element_to_be_clickable(Locators.ACCOUNT_BUTTON))
+        account_button.click()
+        wait.until(EC.url_to_be(Constants.URL_PROFILE))
+
+        # Кликаем на "Конструктор"
+        constructor_button = wait.until(EC.element_to_be_clickable(Locators.CONSTRUCTOR_BUTTON))
         constructor_button.click()
 
-        WebDriverWait(driver, 10).until(EC.url_to_be(Constants.URL))
-        assert driver.current_url == Constants.URL, "Не выполнен переход в конструктор через кнопку 'Конструктор'"
+        # Проверяем, что находимся на главной странице
+        wait.until(EC.url_to_be(Constants.URL))
+        constructor_header = wait.until(EC.presence_of_element_located(Locators.CONSTRUCTOR_HEADER))
+        assert constructor_header.is_displayed()
 
     def test_acc_navigation_to_constructor_from_logo(self, driver):
-        """Проверяет переход в конструктор через логотип"""
-        driver.get(Constants.URL_PROFILE)
+        driver.get(Constants.URL_LOGIN)
+        wait = WebDriverWait(driver, 15)
 
-        logo_button = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable(MainPageLocators.LOGO_BUTTON)
-        )
+        # Вводим email
+        email_input = wait.until(EC.presence_of_element_located(Locators.EMAIL_INPUT))
+        email_input.send_keys(Constants.EMAIL)
+
+        # Вводим пароль
+        password_input = wait.until(EC.presence_of_element_located(Locators.PASSWORD_INPUT))
+        password_input.send_keys(Constants.PASSWORD)
+
+        # Нажимаем кнопку "Войти"
+        login_button = wait.until(EC.element_to_be_clickable(Locators.LOGIN_BUTTON))
+        login_button.click()
+
+        # Переход в личный кабинет
+        account_button = wait.until(EC.element_to_be_clickable(Locators.ACCOUNT_BUTTON))
+        account_button.click()
+        wait.until(EC.url_to_be(Constants.URL_PROFILE))
+
+        # Кликаем на логотип
+        logo_button = wait.until(EC.element_to_be_clickable(Locators.SERVICE_LOGO_BUTTON))
         logo_button.click()
 
-        WebDriverWait(driver, 10).until(EC.url_to_be(Constants.URL))
-        assert driver.current_url == Constants.URL, "Не выполнен переход в конструктор через логотип"
+        # Проверяем, что находимся на главной странице
+        wait.until(EC.url_to_be(Constants.URL))
+        constructor_header = wait.until(EC.presence_of_element_located(Locators.CONSTRUCTOR_HEADER))
+        assert constructor_header.is_displayed()

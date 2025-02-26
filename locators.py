@@ -1,39 +1,34 @@
 from selenium.webdriver.common.by import By
 
-# Форма регистрации
-class RegistrationLocators:
+class Locators:
+    # Форма регистрации
     NAME_INPUT = (By.XPATH, "//label[text()='Имя']/following-sibling::input")
     EMAIL_INPUT = (By.XPATH, "//label[text()='Email']/following-sibling::input")
     PASSWORD_INPUT = (By.XPATH, "//label[text()='Пароль']/following-sibling::input")
     REGISTER_BUTTON = (By.XPATH, "//button[text()='Зарегистрироваться']")
     ERROR_MESSAGE_PASSWORD = (By.XPATH, "//p[contains(text(),'Некорректный пароль')]")
-    ERROR_MESSAGE_REG_NAME_EMPTY = (By.XPATH, ".//p[text() = 'Заполните поле ИМЯ']")  # ошибка при пустом поле Имя
-    LOGIN_LINK = (By.XPATH, "//a[text()='Войти']")  # Ссылка "Войти"
+    ERROR_MESSAGE_REG_NAME_EMPTY = (By.XPATH, "//p[text()='Заполните поле ИМЯ']")
+    LOGIN_LINK = (By.XPATH, "//a[text()='Войти']")
 
-# Авторизация
-class AuthorizationLocators:
-    EMAIL_INPUT = (By.XPATH, "//label[text()='Email']/following-sibling::input")
-    PASSWORD_INPUT = (By.XPATH, "//label[text()='Пароль']/following-sibling::input")
-    LOGIN_BUTTON = (By.XPATH, "//button[text()='Войти']")
-    ERROR_MESSAGE = (By.XPATH, "//p[@class='input__error text_type_main-default']") # Ошибка при неверных данных
-    REGISTER_LINK = (By.XPATH, "//a[text()='Зарегистрироваться']")  # Ссылка на регистрацию
-    RECOVER_PASSWORD_LINK = (By.XPATH, "//a[text()='Восстановить пароль']")  # Ссылка на восстановление пароля
+    # Авторизация
+    LOGIN_BUTTON = (By.XPATH, "//form[contains(@class, 'login')]//button[text()='Войти']")
+    ERROR_MESSAGE = (By.XPATH, "//form[contains(@class, 'login')]//p[@class='input__error text_type_main-default']")
+    REGISTER_LINK = (By.XPATH, "//a[text()='Зарегистрироваться']")
+    RECOVER_PASSWORD_LINK = (By.XPATH, "//a[text()='Восстановить пароль']")
+    LOGIN_TEXT_LINK = (By.XPATH, "//a[text()='Войти']")
 
-# Главная страница
-class MainPageLocators:
-    ACCOUNT_BUTTON = (By.XPATH, "//a[@href='/account']")  # Кнопка "Личный кабинет"
-    CONSTRUCTOR_BUTTON = (By.XPATH, "//p[text()='Конструктор']")  # Кнопка "Конструктор"
-    LOGO_BUTTON = (By.XPATH, "//div[@class='AppHeader_header__logo__2D0X2']")  # Логотип Stellar Burgers
+    # Навигация
+    ACCOUNT_BUTTON = (By.XPATH, "//p[text()='Личный Кабинет']")
+    LOGIN_INTO_ACCOUNT_BUTTON = (By.XPATH, "//button[text()='Войти в аккаунт']")
+    CONSTRUCTOR_BUTTON = (By.XPATH, "//p[text()='Конструктор']")
+    LOGO_BUTTON = (By.XPATH, "//div[contains(@class, 'AppHeader_logo')]")
+    PROFILE_HEADER = (By.XPATH, "//h2[text()='Профиль']")
+    LOGOUT_BUTTON = (By.XPATH, "//button[text()='Выход']")
+    MAKE_ORDER_BUTTON = (By.XPATH, "//button[text()='Оформить заказ']")
 
-# Личный кабинет
-class AccountPageLocators:
-    PROFILE_HEADER = (By.XPATH, "//h2[text()='Профиль']")  # Заголовок "Профиль"
-    LOGOUT_BUTTON = (By.XPATH, "//button[text()='Выход']")  # Кнопка "Выйти"
-
-# Конструктор
-class ConstructorLocators:
-    SAUCES_SECTION = (By.XPATH, "//h2[text()='Соусы']")  # Раздел "Соусы"
-    FILLINGS_SECTION = (By.XPATH, "//h2[text()='Начинки']")  # Раздел "Начинки"
-    BUNS_SECTION = (By.XPATH, "//h2[text()='Булки']")  # Раздел "Булки"
-
-
+    # Конструктор
+    SAUCES_SECTION = (By.XPATH, "//h2[text()='Соусы']")
+    FILLINGS_SECTION = (By.XPATH, "//h2[text()='Начинки']")
+    BUNS_SECTION = (By.XPATH, "//h2[text()='Булки']")
+    CONSTRUCTOR_HEADER = (By.XPATH, "//*[text()='Соберите бургер']")
+    SERVICE_LOGO_BUTTON = (By.XPATH, "//*[contains(@class, 'AppHeader_header__logo')]")

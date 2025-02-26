@@ -2,7 +2,7 @@ import pytest
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from locators import AuthorizationLocators, AccountPageLocators
+from locators import Locators
 from constants import Constants
 
 
@@ -15,33 +15,33 @@ def driver():
     driver.quit()
 
 
-@pytest.fixture
-def login(driver):
-    driver.get(Constants.URL_LOGIN)
+class TestUserLogout:
 
-    # Ожидание загрузки страницы
-    WebDriverWait(driver, 10).until(EC.presence_of_element_located((AuthorizationLocators.EMAIL_INPUT)))
+    def test_logout_from_account(self, driver):
+        driver.get(Constants.URL_LOGIN)
+        wait = WebDriverWait(driver, 15)
 
-    if len(driver.find_elements(*AuthorizationLocators.EMAIL_INPUT)) == 0:
-        pytest.raises(Exception, lambda: (_ for _ in ()).throw(Exception("Элемент EMAIL_INPUT не найден! Проверь XPATH в AuthorizationLocators")))
+        # Вход в аккаунт
+        email_input = wait.until(EC.presence_of_element_located(Locators.EMAIL_INPUT))
+        email_input.send_keys(Constants.EMAIL)
 
-    driver.find_element(*AuthorizationLocators.EMAIL_INPUT).send_keys(Constants.EMAIL)
+        password_input = wait.until(EC.presence_of_element_located(Locators.PASSWORD_INPUT))
+        password_input.send_keys(Constants.PASSWORD)
 
-    WebDriverWait(driver, 10).until(EC.presence_of_element_located((AuthorizationLocators.PASSWORD_INPUT)))
-    driver.find_element(*AuthorizationLocators.PASSWORD_INPUT).send_keys(Constants.PASSWORD)
+        login_button = wait.until(EC.element_to_be_clickable(Locators.LOGIN_BUTTON))
+        login_button.click()
 
-    WebDriverWait(driver, 10).until(EC.element_to_be_clickable((AuthorizationLocators.LOGI_BUTTON)))
-    driver.find_element(*AuthorizationLocators.LOGIN_BUTTON).click()
+        # Ожидаем редиректа в профиль
+        wait.until(EC.url_to_be(Constants.URL_PROFILE))
 
-    WebDriverWait(driver, 10).until(EC.url_changes(Constants.URL_LOGIN))
+        # Переход в личный кабинет
+        account_button = wait.until(EC.element_to_be_clickable(Locators.ACCOUNT_BUTTON))
+        account_button.click()
 
+        # Выход из аккаунта
+        logout_button = wait.until(EC.element_to_be_clickable(Locators.LOGOUT_BUTTON))
+        logout_button.click()
 
-def test_logout(driver, login):
-    driver.get(Constants.URL_PROFILE)
-
-    WebDriverWait(driver, 10).until(EC.element_to_be_clickable((AccountPageLocators.LOGOUT_BUTTON)))
-    driver.find_element(*AccountPageLocators.LOGOUT_BUTTON).click()
-
-    WebDriverWait(driver, 10).until(EC.url_to_be(Constants.URL_LOGIN))
-
-    assert driver.current_url == Constants.URL_LOGIN, "Не выполнен выход из аккаунта"
+        # Проверка редиректа на страницу авторизации
+        wait.until(EC.url_to_be(Constants.URL_LOGIN))
+        assert driver.current_url == Constants.URL_LOGIN, "Выход из аккаунта не выполнен"
